@@ -1,11 +1,11 @@
-CONTAINER_NAME      = centos8
+BUILD_CONTAINER_NAME      = centos8-build
+RPMBUILD_CONTAINER_NAME   = centos8-rpmbuild
 
-
-VBOX_EXTENSIONS_VERSION = 6.1.16
-VBOX_EXTENSIONS_NAME    = Oracle_VM_VirtualBox_Extension_Pack-$(VBOX_EXTENSIONS_VERSION).vbox-extpack
-VBOX_EXTENSIONS         = https://download.virtualbox.org/virtualbox/$(VBOX_EXTENSIONS_VERSION)/$(VBOX_EXTENSIONS_NAME)
-VBOX_LICENSE_SHA256     = 33d7284dc4a0ece381196fda3cfe2ed0e1e8e7ed7f27b9a9ebc4ee22e24bd23c
-VBOX_REPACKAGE_NAME     = rpmbuild-centos8-virtualbox.box
+VBOX_EXTENSIONS_VERSION   = 6.1.16
+VBOX_EXTENSIONS_NAME      = Oracle_VM_VirtualBox_Extension_Pack-$(VBOX_EXTENSIONS_VERSION).vbox-extpack
+VBOX_EXTENSIONS           = https://download.virtualbox.org/virtualbox/$(VBOX_EXTENSIONS_VERSION)/$(VBOX_EXTENSIONS_NAME)
+VBOX_LICENSE_SHA256       = 33d7284dc4a0ece381196fda3cfe2ed0e1e8e7ed7f27b9a9ebc4ee22e24bd23c
+VBOX_REPACKAGE_NAME       = centos8-build-virtualbox.box
 
 # docker
 .PHONY: build
@@ -46,7 +46,8 @@ all: build
 
 
 build:
-	docker-compose build $(CONTAINER_NAME)
+	docker-compose build $(BUILD_CONTAINER_NAME)
+	docker-compose build $(RPMBUILD_CONTAINER_NAME)
 
 
 clean:
@@ -64,7 +65,6 @@ destroy:
 
 jenkins_build:
 	[ -f ${HOME}/.ssh/id_rsa ] && cp ${HOME}/.ssh/id_rsa gitserver_ssh_key
-	install -d -m 770 jenkins/secrets
 	docker-compose build jenkins
 
 
@@ -103,27 +103,27 @@ jenkins_run: jenkins_build
 
 
 rpm: build
-	docker-compose run $(CONTAINER_NAME) /entrypoint.sh
+	docker-compose run $(BUILD_CONTAINER_NAME) /entrypoint.sh
 
 
 run: build
-	docker-compose run $(CONTAINER_NAME)
+	docker-compose run $(BUILD_CONTAINER_NAME)
 
 
 shell: build
-	docker-compose run $(CONTAINER_NAME) /bin/bash -l
+	docker-compose run $(BUILD_CONTAINER_NAME) /bin/bash -l
 
 
 test_build:
-	docker-compose build $(CONTAINER_NAME)-acceptance
+	docker-compose build $(BUILD_CONTAINER_NAME)-acceptance
 
 
 test: test_build
-	docker-compose run $(CONTAINER_NAME)-acceptance /acceptance/runner.sh rake spec:$${RPM_NAME}
+	docker-compose run $(BUILD_CONTAINER_NAME)-acceptance /acceptance/runner.sh rake spec:$${RPM_NAME}
 
 
 test_shell:
-	docker-compose run $(CONTAINER_NAME)-acceptance /acceptance/runner.sh bash -l
+	docker-compose run $(BUILD_CONTAINER_NAME)-acceptance /acceptance/runner.sh bash -l
 
 
 vagrant_install_plugins:

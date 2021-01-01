@@ -1,6 +1,5 @@
 FROM centos:8.3.2011
 
-ARG BUILD_PACKAGES
 ARG LANG=en_US.UTF-8
 ARG LC_ALL=en_US.UTF-8
 ARG LANGUAGE=en_US.UTF-8
@@ -20,7 +19,6 @@ RUN dnf clean all                                && \
     localedef -f UTF-8 -i ${LANG%%.UTF-8} $LANG  && \
     dnf repolist                                 && \
     dnf --enablerepo powertools -y install          \
-      ${BUILD_PACKAGES}                           \
       @development                                  \
       ack                                           \
       bzip2-devel                                   \
@@ -52,7 +50,6 @@ RUN dnf clean all                                && \
     rpmdev-setuptree                             && \
     dnf clean all
 
-COPY .bash_profile      /etc/profile.d/bash.sh
-COPY Dockerfile.centos8 /
-COPY entrypoint.sh      /
-COPY .                  /
+COPY .bash_profile            /etc/profile.d/bash.sh
+COPY Dockerfile.centos8-build /
+COPY entrypoint.sh            /
