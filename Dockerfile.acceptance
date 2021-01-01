@@ -1,0 +1,27 @@
+FROM centos:8.3.2011
+
+ARG LANG
+ARG ACCEPTANCE_BUILD_PACKAGES
+ARG RPM_NAME
+ARG RPM_VERSION
+ARG RPM_RELEASE
+
+RUN dnf clean expire-cache                                      && \
+    dnf install -y                                                 \
+      epel-release                                                 \
+      glibc-locale-source                                       && \
+    localedef -f UTF-8 -i ${LANG%%.UTF-8} $LANG                 && \
+    dnf clean expire-cache                                      && \
+    dnf install -y                                                 \
+      ${ACCEPTANCE_BUILD_PACKAGES}                                 \
+      curl                                                         \
+      git                                                          \
+      gcc                                                          \
+      make                                                         \
+      neovim
+
+COPY profile.d/acceptance-rubies.sh /etc/profile.d/
+COPY rpmbuild/RPMS/x86_64/acceptance-ruby-2.5.8-*.el8.x86_64.rpm /
+
+RUN dnf clean expire-cache && \
+    dnf localinstall -y /acceptance-ruby-2.5.8-*.el8.x86_64.rpm

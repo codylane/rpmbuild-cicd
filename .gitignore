@@ -1,0 +1,10 @@
+## files
+.DS_Store
+*.rpm
+*.tar.gz
+*.vbox-extpack
+*_ssh_key
+
+
+## directories
+.vagrant

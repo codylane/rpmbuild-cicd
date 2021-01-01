@@ -1,0 +1,4 @@
+<hudson>
+  <useSecurity>false</useSecurity>
+  <noUsageStatistics>true</noUsageStatistics>
+</hudson>

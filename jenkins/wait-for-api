@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -e
+
+err() {
+  echo "ERR: $* exiting" >&2
+  exit 1
+}
+
+
+check_api() {
+  jenkins-cli version >>/dev/null 2>&1 && return 0 || return 1
+}
+
+update_jenkins_credentials() {
+  local tmp="$(openssl rand -hex 16)"
+
+  create-jenkins-credentials > "${JENKINS_HOME}/${tmp}.xml"
+  jenkins-cli import-credentials-as-xml system::system::jenkins < "${JENKINS_HOME}/${tmp}.xml"
+  rm -f "${JENKINS_HOME}/${tmp}.xml"
+}
+
+command -v jenkins-cli >>/dev/null || err "Please ensure that the command 'jenkins-cli' is in your PATH"
+
+echo "************************ Waiting for jenkins REST API to come online *********************************"
+
+while true
+do
+  check_api && break || true
+  echo -n "."
+  sleep 1
+done
+echo
+
+echo "Jenkins API is online"
+
+[ "$#" -eq 0 ] && exit 0 || "$@"

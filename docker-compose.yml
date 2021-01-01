@@ -1,0 +1,117 @@
+---
+version: '3.8'
+
+secrets:
+  gitserver_ssh_key:
+    file: ./gitserver_ssh_key
+
+networks:
+  rpmbuild:
+
+volumes:
+  jenkins_home:
+
+services:
+  centos8-acceptance:
+    hostname: 'centos8-acceptance'
+    container_name: 'centos8-acceptance'
+    build:
+      context: '.'
+      dockerfile: 'Dockerfile.acceptance'
+      args:
+        ACCEPTANCE_BUILD_PACKAGES: "${ACCEPTANCE_BUILD_PACKAGES}"
+        LANG: "${LANG}"
+        LANGUAGE: "${LANG}"
+        LC_ALL: "${LANG}"
+        RPM_NAME: "${RPM_NAME}"
+        RPM_VERSION: "${RPM_VERSION}"
+        RPM_RELEASE: "${RPM_RELEASE}"
+    networks:
+      - rpmbuild
+    environment:
+      LANG: "${LANG}"
+      LANGUAGE: "${LANG}"
+      LC_ALL: "${LANG}"
+      RPM_NAME: "${RPM_NAME}"
+      RPM_VERSION: "${RPM_VERSION}"
+      RPM_RELEASE: "${RPM_RELEASE}"
+    volumes:
+      - './rpmbuild:/rpmbuild'
+      - './entrypoint.d:/entrypoint.d'
+      - './acceptance:/acceptance'
+
+  centos8-build:
+    hostname: 'centos8-build'
+    container_name: 'centos8-build'
+    build:
+      context: '.'
+      dockerfile: 'Dockerfile.centos8-build'
+      args:
+        BUILD_PACKAGES: "${BUILD_PACKAGES}"
+        LANG: "${LANG}"
+        LANGUAGE: "${LANG}"
+        LC_ALL: "${LANG}"
+    networks:
+      - rpmbuild
+    environment:
+      LANG: "${LANG}"
+      LANGUAGE: "${LANG}"
+      LC_ALL: "${LANG}"
+      RPM_NAME: "${RPM_NAME}"
+      RPM_VERSION: "${RPM_VERSION}"
+      RPM_RELEASE: "${RPM_RELEASE}"
+      SRC_RPMS: "${SRC_RPMS}"
+      RPMBUILD_EXTRA_ARGS: "${RPMBUILD_EXTRA_ARGS}"
+      QA_RPATHS: "${QA_RPATHS}"
+    volumes:
+      - './rpmbuild:/rpmbuild'
+      - './entrypoint.d:/entrypoint.d'
+
+  jenkins:
+    privileged: true
+    user: jenkins
+    hostname: 'centos8-jenkins'
+    container_name: 'centos8-jenkins'
+    build:
+      context: '.'
+      dockerfile: 'Dockerfile.jenkins'
+      args:
+        GITSERVER_FQDN: 'git.cmfl.net'
+        GITSERVER_SSH_PORT: '22448'
+        JENKINS_PLUGINS: >
+          blueocean:1.24.3
+          blueocean-bitbucket-pipeline:1.24.3
+          blueocean-dashboard:1.24.3
+          blueocean-events:1.24.3
+          blueocean-git-pipeline:1.24.3
+          blueocean-pipeline-api-impl:1.24.3
+          blueocean-pipeline-editor:1.24.3
+          blueocean-rest-impl:1.24.3
+          blueocean-web:1.24.3
+          generic-webhook-trigger:1.72
+          pipeline-utility-steps:2.6.1
+          ssh-agent:1.20
+          workflow-job:2.40
+          ws-cleanup:0.38
+    networks:
+      - rpmbuild
+    environment:
+      JENKINS_HOME: '/var/jenkins_home'
+      JENKINS_URL: 'http://localhost:8080'
+      JENKINS_API_USER: admin
+      JAVA_OPTS: >
+        -Xms256m
+        -Xmx256m
+        -Duser.timezone=EST
+        -Djava.awt.headless=true
+        -Dhudson.InitReactorRunner.concurrency=4
+        -Dhudson.footerURL=http://localhost:8081
+        -Dblueocean.collectRuns.threads=4
+    ports:
+      - "8081:8080"
+      - "50000:50000"
+    secrets:
+      - gitserver_ssh_key
+    volumes: # for performance reasons we use named volumes instead of bind mounts.
+      - 'jenkins_home:/var/jenkins_home'
+      - /var/run/docker.sock:/var/run/docker.sock

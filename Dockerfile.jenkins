@@ -1,0 +1,49 @@
+FROM jenkins/jenkins:lts-centos
+
+# Things that do not require build args should be placed first
+# which should help speed up the build process.
+USER root
+RUN dnf clean expire-cache                                                                                                                            && \
+    dnf install -y                                                                                                                                       \
+      make                                                                                                                                               \
+      yum-utils                                                                                                                                       && \
+    yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo                                                             && \
+    dnf install -y docker-ce-cli                                                                                                                      && \
+    curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose      && \
+    chmod 755 /usr/local/bin/docker-compose                                                                                                           && \
+    usermod -a -G docker jenkins
+
+# create ssh host keys
+# we also ensure that our SSL certificate store contains the bitbucket chain
+USER root
+RUN ssh-keygen -A   && \
+    update-ca-trust
+
+ARG REF=/usr/share/jenkins/ref
+ARG JENKINS_PLUGINS=
+ARG GITSERVER_FQDN=
+ARG GITSERVER_SSH_PORT=
+
+ENV GITSERVER_FQDN=${GITSERVER_FQDN}
+ENV GITSERVER_SSH_PORT=${GITSERVER_SSH_PORT}
+
+USER jenkins
+RUN jenkins-plugin-cli --plugins ${JENKINS_PLUGINS}
+
+COPY --chown=jenkins:jenkins ./gitserver_ssh_key                   /var/run/secrets/gitserver_ssh_key
+
+USER jenkins
+RUN mkdir -p ${REF}/.ssh                                                              && \
+    chmod 0700 ${REF}/.ssh                                                            && \
+    ln -sf /var/run/secrets/gitserver_ssh_key ${REF}/.ssh/id_rsa                      && \
+    ssh-keyscan -p ${GITSERVER_SSH_PORT} ${GITSERVER_FQDN} > ${REF}/.ssh/known_hosts  && \
+    ln -sf ${JENKINS_HOME}/war/WEB-INF/lib/cli-*.jar ${JENKINS_HOME}/jenkins-cli.jar
+
+COPY --chown=jenkins:jenkins ./jenkins/init.groovy.d/  ${REF}/init.groovy.d/
+COPY --chown=jenkins:jenkins ./jenkins/config.xml      ${REF}/config.xml.override
+
+COPY ./jenkins/jenkins-cli                /usr/local/bin/jenkins-cli
+COPY ./jenkins/wait-for-api               /usr/local/bin/wait-for-api
+COPY ./jenkins/create-jenkins-credentials /usr/local/bin/create-jenkins-credentials
+
+WORKDIR ${JENKINS_HOME}

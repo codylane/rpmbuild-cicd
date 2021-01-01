@@ -1,0 +1,18 @@
+## files
+.bash_history
+.lastStarted
+.owner
+*.log
+*.key*
+*.bak
+jenkins.install.*
+
+## directories
+.cache/
+.java/
+logs/
+userContent/
+secrets/
+updates/
+war/
+plugins/

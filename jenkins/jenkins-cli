@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -e
+
+JENKINS_URL="${JENKINS_URL:-http://localhost:8080}"
+[ -z "${JENKINS_HOME}" ] && JENKINS_HOME="$(getent passwd jenkins | cut -d':' -f6)"
+
+JENKINS_API_USER="${JENKINS_API_USER:-admin}"
+JENKINS_API_PASS="$(cat ${JENKINS_HOME}/secrets/initialAdminPassword)"
+
+[ -f "${JENKINS_HOME}/jenkins-cli.jar" ] || ln -sf ${JENKINS_HOME}/war/WEB-INF/lib/cli-*.jar ${JENKINS_HOME}/jenkins-cli.jar
+
+JAVA=$(command -v java)
+JENKINS_CLI_OPTS="${@:-help}"
+
+err()
+{
+  echo "ERR: $* exiting" >&2
+  exit 1
+}
+
+${JAVA}                                            \
+  -jar "${JENKINS_HOME}/jenkins-cli.jar"           \
+  -s "${JENKINS_URL%/}"                            \
+  -auth "${JENKINS_API_USER}:${JENKINS_API_PASS}"  \
+  -webSocket                                       \
+  ${JENKINS_CLI_OPTS}
