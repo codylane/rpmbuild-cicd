@@ -1,6 +1,6 @@
 FROM rpmbuild-cicd_centos8-build
 
-ARG BUILD_PACKAGES
+ARG BUILD_PACKAGES=
 ARG LANG=en_US.UTF-8
 ARG LC_ALL=en_US.UTF-8
 ARG LANGUAGE=en_US.UTF-8
@@ -13,11 +13,10 @@ ENV RPM_VERSION=""
 ENV RPM_RELEASE=""
 ENV RPMBUILD_EXTRA_ARGS=""
 
-RUN dnf clean exprire-cache                      && \
-    dnf repolist                                 && \
-    dnf --enablerepo powertools -y install          \
-      ${BUILD_PACKAGES}                          && \
-    rpmdev-setuptree                             && \
+RUN dnf clean expire-cache                                                                 && \
+    dnf repolist                                                                           && \
+    [ -z "${BUILD_PACKAGES}" ] || dnf --enablerepo powertools -y install ${BUILD_PACKAGES} && \
+    rpmdev-setuptree                                                                       && \
     dnf clean all
 
 COPY Dockerfile.centos8-rpmbuild /

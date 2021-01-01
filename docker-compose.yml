@@ -47,6 +47,29 @@ services:
       context: '.'
       dockerfile: 'Dockerfile.centos8-build'
       args:
+        LANG: "${LANG}"
+        LANGUAGE: "${LANG}"
+        LC_ALL: "${LANG}"
+    networks:
+      - rpmbuild
+    environment:
+      LANG: "${LANG}"
+      LANGUAGE: "${LANG}"
+      LC_ALL: "${LANG}"
+      RPM_NAME: "${RPM_NAME}"
+      RPM_VERSION: "${RPM_VERSION}"
+      RPM_RELEASE: "${RPM_RELEASE}"
+      SRC_RPMS: "${SRC_RPMS}"
+      RPMBUILD_EXTRA_ARGS: "${RPMBUILD_EXTRA_ARGS}"
+      QA_RPATHS: "${QA_RPATHS}"
+
+  centos8-rpmbuild:
+    hostname: 'centos8-rpmbuild'
+    container_name: 'centos8-rpmbuild'
+    build:
+      context: '.'
+      dockerfile: 'Dockerfile.centos8-rpmbuild'
+      args:
         BUILD_PACKAGES: "${BUILD_PACKAGES}"
         LANG: "${LANG}"
         LANGUAGE: "${LANG}"
