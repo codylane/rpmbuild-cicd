@@ -120,7 +120,7 @@ make jenkins_destroy_volume
   docker ps -a
 
   # you will be looking for something like this
-  2a8c4359bfd3   rpm-boilerplate_centos8   "/entrypoint.sh"         17 minutes ago   Exited (0) 9 minutes ago
+  2a8c4359bfd3   rpmbuild-cicd "/entrypoint.sh" 17 minutes ago   Exited (0) 9 minutes ago
 
   # you need to remove this container and it's volume
   docker rm -vf a28

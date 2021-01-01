@@ -77,11 +77,11 @@ jenkins_clean: jenkins_destroy
 
 
 jenkins_destroy:
-	docker-compose rm -fsv jenkins
+	docker-compose rm -fsv jenkins || true
 
 
 jenkins_destroy_volume: jenkins_destroy
-	@docker volume rm $(docker volume ls -f name=rpm-boilerplate -q) >>/dev/null 2>&1 || true
+	docker volume rm -f $(shell docker volume ls -q -f name=rpmbuild-cicd) >>/dev/null 2>&1 || true
 
 
 jenkins_log:

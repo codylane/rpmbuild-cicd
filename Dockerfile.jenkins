@@ -37,7 +37,8 @@ RUN mkdir -p ${REF}/.ssh                                                        
     chmod 0700 ${REF}/.ssh                                                            && \
     ln -sf /var/run/secrets/gitserver_ssh_key ${REF}/.ssh/id_rsa                      && \
     ssh-keyscan -p ${GITSERVER_SSH_PORT} ${GITSERVER_FQDN} > ${REF}/.ssh/known_hosts  && \
-    ln -sf ${JENKINS_HOME}/war/WEB-INF/lib/cli-*.jar ${JENKINS_HOME}/jenkins-cli.jar
+    ln -sf ${JENKINS_HOME}/war/WEB-INF/lib/cli-*.jar ${JENKINS_HOME}/jenkins-cli.jar  && \
+    cp /etc/skel/.bash* ${REF}/
 
 COPY --chown=jenkins:jenkins ./jenkins/init.groovy.d/  ${REF}/init.groovy.d/
 COPY --chown=jenkins:jenkins ./jenkins/config.xml      ${REF}/config.xml.override
