@@ -137,5 +137,5 @@ services:
       - gitserver_ssh_key
     volumes: # for performance reasons we use named volumes instead of bind mounts.
       - 'jenkins_home:/var/jenkins_home'
-      - /var/run/docker.sock:/var/run/docker.sock
-      - './jenkins/jobs:/var/jenkins_home/jobs'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - './Jenkinsfile:/var/jenkins_home/workspace/testing/workspace/Jenkinsfile'
