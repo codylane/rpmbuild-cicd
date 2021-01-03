@@ -98,9 +98,9 @@ jenkins_shell:
 
 jenkins_run: jenkins_build
 	docker-compose up -d jenkins
-	@echo ">>>> Attempting to populate jenkins credentials.xml with your SSH key <<<<<"
-	@docker-compose exec -u root -T jenkins wait-for-api update_jenkins_credentials
-
+	@echo ">>>> Populating jenkins credentials <<<<"
+	@echo ">>>> Populating jenkins with jobs <<<<"
+	@docker-compose exec -u root jenkins wait-for-api
 
 rpm: build
 	docker-compose run $(BUILD_CONTAINER_NAME) /entrypoint.sh

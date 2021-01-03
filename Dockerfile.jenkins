@@ -46,5 +46,6 @@ COPY --chown=jenkins:jenkins ./jenkins/config.xml      ${REF}/config.xml.overrid
 COPY ./jenkins/jenkins-cli                /usr/local/bin/jenkins-cli
 COPY ./jenkins/wait-for-api               /usr/local/bin/wait-for-api
 COPY ./jenkins/create-jenkins-credentials /usr/local/bin/create-jenkins-credentials
+COPY ./jenkins/jobs                       ${REF}/jobs
 
 WORKDIR ${JENKINS_HOME}
