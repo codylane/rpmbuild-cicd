@@ -98,8 +98,6 @@ jenkins_shell:
 
 jenkins_run: jenkins_build
 	docker-compose up -d jenkins
-	@echo ">>>> Populating jenkins credentials <<<<"
-	@echo ">>>> Populating jenkins with jobs <<<<"
 	@docker-compose exec -u root jenkins wait-for-api
 
 rpm: build

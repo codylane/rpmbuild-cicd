@@ -25,15 +25,10 @@ RPM Boilerplate
 
 # Usage
 
-* Please ensure that `docker` and `make` are installed on your workstation.
+* Please ensure that `docker`, `docker-compose` and `make` are installed on your workstation.
 * https://www.docker.com/get-started
 * https://get.docker.com/
-
-* Ensure that you have the `make` utility installed and contained within
-  your path.
-
-* Ensure that you have the `docker-compose` utility installed and
-  contained within your path.
+* https://docs.docker.com/compose/install/
 
 * **NOTE:** Due to upstream changes in CentOS 8, please ensure you are using at least CentOS >= `8.3.2011`.
             If the automation pipeline fails when trying to install packages via the `PowerTools` repo,

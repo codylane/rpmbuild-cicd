@@ -12,6 +12,7 @@ apply_jenkins_credentials()
 
   local tmp="$(openssl rand -hex 16)"
 
+  echo '>>>> Populating jenkins credentials <<<<'
   create-jenkins-credentials > "${JENKINS_HOME}/${tmp}.xml"
   jenkins-cli import-credentials-as-xml system::system::jenkins < "${JENKINS_HOME}/${tmp}.xml"
   rm -f "${JENKINS_HOME}/${tmp}.xml"
@@ -22,6 +23,7 @@ create_jenkins_jobs()
 {
   local jobs="$(jenkins-cli list-jobs)"
 
+  echo '>>>> Populating jenkins with jobs <<<<'
   find "${JENKINS_HOME}/jobs" -maxdepth 1 -name '*.xml' -type f | while read job_xml
   do
     job_name="$(basename $job_xml)"
