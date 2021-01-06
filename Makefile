@@ -1,11 +1,7 @@
-BUILD_CONTAINER_NAME      = centos8-build
-RPMBUILD_CONTAINER_NAME   = centos8-rpmbuild
-
-VBOX_EXTENSIONS_VERSION   = 6.1.16
-VBOX_EXTENSIONS_NAME      = Oracle_VM_VirtualBox_Extension_Pack-$(VBOX_EXTENSIONS_VERSION).vbox-extpack
-VBOX_EXTENSIONS           = https://download.virtualbox.org/virtualbox/$(VBOX_EXTENSIONS_VERSION)/$(VBOX_EXTENSIONS_NAME)
-VBOX_LICENSE_SHA256       = 33d7284dc4a0ece381196fda3cfe2ed0e1e8e7ed7f27b9a9ebc4ee22e24bd23c
-VBOX_REPACKAGE_NAME       = centos8-build-virtualbox.box
+CONTAINER_PREFIX          = centos8
+BUILD_CONTAINER_NAME      = $(CONTAINER_PREFIX)-build
+RPMBUILD_CONTAINER_NAME   = $(CONTAINER_PREFIX)-rpmbuild
+ACCEPTANCE_CONTAINER_NAME = $(CONTAINER_PREFIX)-acceptance
 
 # docker
 .PHONY: build
@@ -105,94 +101,24 @@ jenkins_run: jenkins_build
 	@docker-compose exec -u root jenkins wait-for-api
 
 rpm: build
-	docker-compose run $(BUILD_CONTAINER_NAME) /entrypoint.sh
+	docker-compose run $(RPMBUILD_CONTAINER_NAME) /entrypoint.sh
 
 
 run: build
-	docker-compose run $(BUILD_CONTAINER_NAME)
+	docker-compose run $(RPMBUILD_CONTAINER_NAME)
 
 
 shell: build
-	docker-compose run $(BUILD_CONTAINER_NAME) /bin/bash -l
+	docker-compose run $(RPMBUILD_CONTAINER_NAME) /bin/bash -l
 
 
 test_build:
-	docker-compose build $(BUILD_CONTAINER_NAME)-acceptance
+	docker-compose build $(ACCEPTANCE_CONTAINER_NAME)
 
 
 test: test_build
-	docker-compose run $(BUILD_CONTAINER_NAME)-acceptance /acceptance/runner.sh rake spec:$${RPM_NAME}
+	docker-compose run $(ACCEPTANCE_CONTAINER_NAME) /acceptance/runner.sh rake spec:$${RPM_NAME}
 
 
 test_shell:
-	docker-compose run $(BUILD_CONTAINER_NAME)-acceptance /acceptance/runner.sh bash -l
-
-
-vagrant_install_plugins:
-	# due to a bug upstream with vagrant versions 2.11 - 2.13 you'll need to
-	# stick with vagrant-vbguest 0.26.0
-	vagrant plugin install vagrant-vbguest --plugin-version 0.26.0
-
-
-vbox_download_centos8:
-	vagrant box add bento/centos-8.2 --provider virtualbox
-
-
-vbox_download_extensions:
-	curl -L $(VBOX_EXTENSIONS) -o $(VBOX_EXTENSIONS_NAME)
-	VBoxManage extpack install --replace --accept-license=$(VBOX_LICENSE_SHA256) $(VBOX_EXTENSIONS_NAME)
-
-
-vbox: vbox_download_extensions vbox_download_centos8 vagrant_install_plugins
-
-
-vbox_build: vbox_clean vbox_run vbox_stop vbox_snapshot
-
-
-vbox_run:
-	ACTION=$(ACTION) vagrant up --provision default
-	vagrant ssh -c 'sync'
-
-
-vbox_clean:
-	vagrant destroy -f default
-
-
-vbox_rpm:
-	ACTION=rpm vagrant up --provision default
-
-
-vbox_reload: vbox_restore
-	vagrant provision default
-
-
-vbox_restore:
-	vagrant snapshot restore default base
-
-
-vbox_shell:
-	vagrant ssh default
-
-
-vbox_snapshot:
-	vagrant snapshot save -f default base
-
-
-vbox_stop:
-	vagrant halt -f default
-
-
-vbox_acceptance_shell:
-	vagrant ssh acceptance
-
-
-vbox_repackage: vbox_stop
-	vagrant package --output $(VBOX_REPACKAGE_NAME) default
-
-
-vbox_test_clean:
-	vagrant destroy -f acceptance
-
-
-vbox_test:
-	ACTION=acceptance vagrant up --provision acceptance
+	docker-compose run $(ACCEPTANCE_CONTAINER_NAME) /acceptance/runner.sh bash -l
