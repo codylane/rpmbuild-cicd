@@ -21,6 +21,7 @@ pipeline {
   }
 
   environment {
+    LANG                = "en_US.UTF-8"
     RPM_NAME            = "${params.RPM_NAME}"
     RPM_VERSION         = "${params.RPM_VERSION}"
     RPM_RELEASE         = "${params.RPM_RELEASE}"
@@ -31,10 +32,12 @@ pipeline {
 
   stages {
 
-    stage ('prep') {
+    stage ('build-rpmbuild-container') {
       steps {
-        dir('../workspace') {
-          sh "pwd"
+        dir ('../workspace') {
+          sh 'make build'
+          sh 'docker tag rpmbuild-cicd_centos8-build docker-registry.cmfl.net:5000/rpmbuild-cicd_centos8-build'
+          sh 'docker push docker-registry.cmfl.net:5000/rpmbuild-cicd_centos8-build'
         }
       }
     }

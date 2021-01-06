@@ -6,7 +6,7 @@
     <script>
 			node {
 				stage('testing') {
-        	sh "cp /var/jenkins_home/workspace/testing/workspace/Jenkinsfile ."
+          sh "cp -RT /var/jenkins_home/workspace/ ${WORKSPACE}"
         	load 'Jenkinsfile'
 				}
 			}

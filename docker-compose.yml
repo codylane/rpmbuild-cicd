@@ -43,6 +43,7 @@ services:
   centos8-build:
     hostname: 'centos8-build'
     container_name: 'centos8-build'
+    image: 'rpmbuild-cicd_centos8-build'
     build:
       context: '.'
       dockerfile: 'Dockerfile.centos8-build'
@@ -92,7 +93,7 @@ services:
 
   jenkins:
     privileged: true
-    user: jenkins
+    user: root
     hostname: 'centos8-jenkins'
     container_name: 'centos8-jenkins'
     build:
@@ -138,4 +139,4 @@ services:
     volumes: # for performance reasons we use named volumes instead of bind mounts.
       - 'jenkins_home:/var/jenkins_home'
       - '/var/run/docker.sock:/var/run/docker.sock'
-      - './Jenkinsfile:/var/jenkins_home/workspace/testing/workspace/Jenkinsfile'
+      - '.:/var/jenkins_home/workspace'

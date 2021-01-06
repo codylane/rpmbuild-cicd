@@ -84,6 +84,10 @@ jenkins_destroy_volume: jenkins_destroy
 	docker volume rm -f $(shell docker volume ls -q -f name=rpmbuild-cicd) >>/dev/null 2>&1 || true
 
 
+jenkins_job:
+	docker-compose exec -T jenkins jenkins-cli build testing -v -s
+
+
 jenkins_log:
 	docker-compose logs -f jenkins
 

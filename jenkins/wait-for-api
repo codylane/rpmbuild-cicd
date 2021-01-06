@@ -12,7 +12,7 @@ apply_jenkins_credentials()
 
   local tmp="$(openssl rand -hex 16)"
 
-  echo '>>>> Populating jenkins credentials <<<<'
+  echo '>>>> Populating jenkins credentials'
   create-jenkins-credentials > "${JENKINS_HOME}/${tmp}.xml"
   jenkins-cli import-credentials-as-xml system::system::jenkins < "${JENKINS_HOME}/${tmp}.xml"
   rm -f "${JENKINS_HOME}/${tmp}.xml"
@@ -23,11 +23,11 @@ create_jenkins_jobs()
 {
   local jobs="$(jenkins-cli list-jobs)"
 
-  echo '>>>> Populating jenkins with jobs <<<<'
+  echo '>>>> Populating jenkins with jobs'
   find "${JENKINS_HOME}/jobs" -maxdepth 1 -name '*.xml' -type f | while read job_xml
   do
     job_name="$(basename $job_xml)"
-    echo $jobs | grep -q "${job_name}" || jenkins-cli create-job "${job_name%.xml}" < ${job_xml}
+    jenkins-cli create-job "${job_name%.xml}" < ${job_xml}
   done
 }
 
@@ -37,7 +37,7 @@ check_api() {
 
 command -v jenkins-cli >>/dev/null || err "Please ensure that the command 'jenkins-cli' is in your PATH"
 
-echo "************************ Waiting for jenkins REST API to come online *********************************"
+echo -n ">>>> Waiting for jenkins REST API to come online ["
 
 while true
 do
@@ -45,9 +45,9 @@ do
   echo -n "."
   sleep 1
 done
-echo
+echo "]"
 
-echo "Jenkins API is online"
+echo ">>>> Jenkins API is online"
 
 [ -f "${JENKINS_HOME}/credentials.xml" ] && exit 0 || apply_jenkins_credentials
 create_jenkins_jobs
