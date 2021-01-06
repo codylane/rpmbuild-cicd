@@ -32,16 +32,23 @@ pipeline {
 
   stages {
 
-    stage ('build-rpmbuild-container') {
+    /* stage ('build-rpmbuild-container') { */
+    /*   steps { */
+    /*     dir ('../workspace') { */
+    /*       sh 'make build' */
+    /*       sh 'docker tag rpmbuild-cicd_centos8-build docker-registry.cmfl.net:5000/rpmbuild-cicd_centos8-build' */
+    /*       sh 'docker push docker-registry.cmfl.net:5000/rpmbuild-cicd_centos8-build' */
+    /*     } */
+    /*   } */
+    /* } */
+
+    stage ('build-rpm') {
       steps {
         dir ('../workspace') {
-          sh 'make build'
-          sh 'docker tag rpmbuild-cicd_centos8-build docker-registry.cmfl.net:5000/rpmbuild-cicd_centos8-build'
-          sh 'docker push docker-registry.cmfl.net:5000/rpmbuild-cicd_centos8-build'
+          sh 'examples/ganglia/build.sh make rpm'
         }
       }
     }
-
   }
 
 

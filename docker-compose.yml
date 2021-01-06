@@ -90,6 +90,7 @@ services:
     volumes:
       - './rpmbuild:/rpmbuild'
       - './entrypoint.d:/entrypoint.d'
+      - './examples:/examples'
 
   jenkins:
     privileged: true
