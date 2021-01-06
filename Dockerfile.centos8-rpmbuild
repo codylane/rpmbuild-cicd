@@ -12,6 +12,7 @@ ENV RPM_NAME=""
 ENV RPM_VERSION=""
 ENV RPM_RELEASE=""
 ENV RPMBUILD_EXTRA_ARGS=""
+ENV PATCH_SPEC=""
 
 RUN dnf clean expire-cache                                                                 && \
     dnf repolist                                                                           && \
@@ -21,3 +22,5 @@ RUN dnf clean expire-cache                                                      
 
 COPY Dockerfile.centos8-rpmbuild /
 COPY entrypoint.sh               /
+COPY rpmbuild                    /rpmbuild
+COPY entrypoint.d                /entrypoint.d

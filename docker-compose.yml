@@ -81,16 +81,14 @@ services:
       LANG: "${LANG}"
       LANGUAGE: "${LANG}"
       LC_ALL: "${LANG}"
+      PATCH_SPEC: "${PATCH_SPEC}"
       RPM_NAME: "${RPM_NAME}"
       RPM_VERSION: "${RPM_VERSION}"
       RPM_RELEASE: "${RPM_RELEASE}"
-      SRC_RPMS: "${SRC_RPMS}"
       RPMBUILD_EXTRA_ARGS: "${RPMBUILD_EXTRA_ARGS}"
+      SRC_RPMS: "${SRC_RPMS}"
       QA_RPATHS: "${QA_RPATHS}"
-    volumes:
-      - './rpmbuild:/rpmbuild'
-      - './entrypoint.d:/entrypoint.d'
-      - './examples:/examples'
+    volumes: []
 
   jenkins:
     privileged: true

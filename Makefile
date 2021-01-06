@@ -81,8 +81,18 @@ jenkins_destroy_volume: jenkins_destroy
 
 
 jenkins_job:
-	docker-compose exec -T jenkins jenkins-cli build testing -v -s
-
+	docker-compose exec \
+		-T          \
+		jenkins     \
+		jenkins-cli \
+			build   \
+			testing \
+			-v      \
+			-s      \
+			-p RPM_NAME=ganglia  \
+			-p RPM_VERSION=3.7.2 \
+			-p RPM_RELEASE=-33   \
+			-p SRC_RPMS='https://kojipkgs.fedoraproject.org//packages/ganglia/3.7.2/33.el8/src/ganglia-3.7.2-33.el8.src.rpm'
 
 jenkins_log:
 	docker-compose logs -f jenkins
