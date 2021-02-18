@@ -14,10 +14,10 @@ ENV RPM_RELEASE=""
 ENV RPMBUILD_EXTRA_ARGS=""
 ENV PATCH_SPEC=""
 
-RUN dnf clean expire-cache                                                                 && \
-    dnf repolist                                                                           && \
-    [ -z "${BUILD_PACKAGES}" ] || dnf --enablerepo powertools -y install ${BUILD_PACKAGES} && \
-    rpmdev-setuptree                                                                       && \
+RUN dnf clean expire-cache                                                                                    && \
+    dnf repolist                                                                                              && \
+    [ -z "${BUILD_PACKAGES}" ] || dnf --enablerepo powertools --enablerepo devel -y install ${BUILD_PACKAGES} && \
+    rpmdev-setuptree                                                                                          && \
     dnf clean all
 
 COPY Dockerfile.centos8-rpmbuild /

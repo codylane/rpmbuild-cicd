@@ -24,20 +24,6 @@ ACCEPTANCE_CONTAINER_NAME = $(CONTAINER_PREFIX)-acceptance
 .PHONY: jenkins_shell
 .PHONY: jenkins_run
 
-# vbox + vagrant
-.PHONY: vagrant_install_plugins
-
-.PHONY: vbox
-.PHONY: vbox_acceptance_shell
-.PHONY: vbox_clean
-.PHONY: vbox_download_extensions
-.PHONY: vbox_download_centos8
-.PHONY: vbox_repackage
-.PHONY: vbox_snapshot
-.PHONY: vbox_stop
-.PHONY: vbox_test
-.PHONY: vbox_test_clean
-
 all: build
 
 
@@ -110,8 +96,10 @@ jenkins_run: jenkins_build
 	docker-compose up -d jenkins
 	@docker-compose exec -u root jenkins wait-for-api
 
+
 rpm: build
 	docker-compose run $(RPMBUILD_CONTAINER_NAME) /entrypoint.sh
+	docker cp $(RPMBUILD_CONTAINER_NAME):/root/rpmbuild/RPMS rpmbuild/
 
 
 run: build
