@@ -88,7 +88,8 @@ services:
       RPMBUILD_EXTRA_ARGS: "${RPMBUILD_EXTRA_ARGS}"
       SRC_RPMS: "${SRC_RPMS}"
       QA_RPATHS: "${QA_RPATHS}"
-    volumes: []
+    volumes:
+      - './rpmbuild:/rpmbuild'
 
   jenkins:
     privileged: true
