@@ -242,8 +242,6 @@ make test
 * The schema for pipeline `make` commands is `$hypervisor_$command`
 * The **default** hypervisor does not have `make` commands that start with `$hypervisor_`.
 * The **default** hypervisor is `Docker`
-* For example, if you are using VirtualBox then the `make` command
-  to for **build** would be `vbox_build`
 * If using the default hypervisr (Docker) in this case, then the `make` comand for
   **build** is just `build`
 
@@ -272,19 +270,6 @@ make test
 make build
 ```
 
-### Building the vagrant box for the first time - Vagrant
-
-* Destroy the vagrant box
-* Create the vagrant box
-* Provision the vagrant box to a default base level
-* Power off the vagrant box
-* Snapshot the box as base
-
-```
-make vbox_build
-```
-
-
 ### Run the container - Docker
 
 * This step will build the container if not already built or use the cached built image.
@@ -296,22 +281,6 @@ make vbox_build
 make run
 ```
 
-### Run the vagrant box - Vagrant
-
-* Creates the vagrant box
-* Provisions the vagrant box to the default base level
-
-```
-make vbox_run
-```
-
-You can also pass the `ACTION` variable which tells [vagrant-entrypoint.sh](vagrant-entrypoint.sh)
-to run a certain entrypoint step.
-
-```
-make ACTION=rpm vbox_run
-```
-
 ### Build the RPM without an interactive shell - Docker
 
 * This step assumes you have already built the container.
@@ -321,14 +290,4 @@ make ACTION=rpm vbox_run
 
 ```
 make rpm
-```
-
-### Build the RPM without an interactive shell - Vagrant
-
-* Create the vagrant box
-* Provision the vagrant box to a default base level
-* Provision and build your custom RPM
-
-```
-make vbox_rpm
 ```
