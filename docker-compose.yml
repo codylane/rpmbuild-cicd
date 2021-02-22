@@ -40,6 +40,57 @@ services:
       - './entrypoint.d:/entrypoint.d'
       - './acceptance:/acceptance'
 
+  centos7-build:
+    hostname: 'centos7-build'
+    container_name: 'centos7-build'
+    image: 'rpmbuild-cicd_centos7-build'
+    build:
+      context: '.'
+      dockerfile: 'Dockerfile.centos7-build'
+      args:
+        LANG: "${LANG}"
+        LANGUAGE: "${LANG}"
+        LC_ALL: "${LANG}"
+    networks:
+      - rpmbuild
+    environment:
+      LANG: "${LANG}"
+      LANGUAGE: "${LANG}"
+      LC_ALL: "${LANG}"
+      RPM_NAME: "${RPM_NAME}"
+      RPM_VERSION: "${RPM_VERSION}"
+      RPM_RELEASE: "${RPM_RELEASE}"
+      SRC_RPMS: "${SRC_RPMS}"
+      RPMBUILD_EXTRA_ARGS: "${RPMBUILD_EXTRA_ARGS}"
+      QA_RPATHS: "${QA_RPATHS}"
+
+  centos7-rpmbuild:
+    hostname: 'centos7-rpmbuild'
+    container_name: 'centos7-rpmbuild'
+    build:
+      context: '.'
+      dockerfile: 'Dockerfile.centos7-rpmbuild'
+      args:
+        BUILD_PACKAGES: "${BUILD_PACKAGES}"
+        LANG: "${LANG}"
+        LANGUAGE: "${LANG}"
+        LC_ALL: "${LANG}"
+    networks:
+      - rpmbuild
+    environment:
+      LANG: "${LANG}"
+      LANGUAGE: "${LANG}"
+      LC_ALL: "${LANG}"
+      PATCH_SPEC: "${PATCH_SPEC}"
+      RPM_NAME: "${RPM_NAME}"
+      RPM_VERSION: "${RPM_VERSION}"
+      RPM_RELEASE: "${RPM_RELEASE}"
+      RPMBUILD_EXTRA_ARGS: "${RPMBUILD_EXTRA_ARGS}"
+      SRC_RPMS: "${SRC_RPMS}"
+      QA_RPATHS: "${QA_RPATHS}"
+    volumes:
+      - './rpmbuild:/rpmbuild'
+
   centos8-build:
     hostname: 'centos8-build'
     container_name: 'centos8-build'
