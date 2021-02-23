@@ -1,5 +1,6 @@
-FROM centos:7.9.2009
+FROM rpmbuild-cicd_centos7-build
 
+ARG BUILD_PACKAGES=
 ARG LANG=en_US.UTF-8
 ARG LC_ALL=en_US.UTF-8
 ARG LANGUAGE=en_US.UTF-8
@@ -11,45 +12,15 @@ ENV RPM_NAME=""
 ENV RPM_VERSION=""
 ENV RPM_RELEASE=""
 ENV RPMBUILD_EXTRA_ARGS=""
+ENV PATCH_SPEC=""
 
-RUN yum clean all                                && \
-    yum install -y                                  \
-      epel-release                                  \
-      glibc-locale-source                        && \
-    localedef -f UTF-8 -i ${LANG%%.UTF-8} $LANG  && \
-    yum repolist                                 && \
-    yum -y install                                  \
-      @development                                  \
-      ack                                           \
-      bzip2-devel                                   \
-      ctags                                         \
-      expat-devel                                   \
-      gdbm-devel                                    \
-      git                                           \
-      glibc-langpack-tr                             \
-      libdb-devel                                   \
-      libffi-devel                                  \
-      libpcap-devel                                 \
-      libsqlite3x-devel                             \
-      libsq3-devel                                  \
-      neovim                                        \
-      ncurses-devel                                 \
-      openssl-devel                                 \
-      python2-devel                                 \
-      python38-devel                                \
-      rpm-build                                     \
-      readline-devel                                \
-      rpmdevtools                                   \
-      rsync                                         \
-      ruby-devel                                    \
-      sqlite-devel                                  \
-      systemtap-sdt-devel                           \
-      tk-devel                                      \
-      xz-devel                                      \
-      zlib-devel                                 && \
-    rpmdev-setuptree                             && \
+RUN yum clean expire-cache                                                                                    && \
+    yum repolist                                                                                              && \
+    [ -z "${BUILD_PACKAGES}" ] || yum -y install ${BUILD_PACKAGES} && \
+    rpmdev-setuptree                                                                                          && \
     yum clean all
 
-COPY .bash_profile               /etc/profile.d/bash.sh
 COPY Dockerfile.centos7-rpmbuild /
 COPY entrypoint.sh               /
+COPY rpmbuild                    /rpmbuild
+COPY entrypoint.d                /entrypoint.d

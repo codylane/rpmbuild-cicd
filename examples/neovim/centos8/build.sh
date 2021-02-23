@@ -2,7 +2,7 @@
 
 export RPM_NAME=neovim
 export RPM_VERSION=0.4.4
-export RPM_RELEASE=-1
+export RPM_RELEASE=1
 
 export BUILD_PACKAGES=$(cat <<BUILD_PACKAGES_EOS
 cmake
@@ -12,10 +12,13 @@ fdupes
 gperf
 libtermkey-devel
 libuv-devel
+lua-devel
 lua-luv-devel
 libvterm-devel
 lua5.1-luv-devel
 lua5.1-lpeg
+lua-lpeg
+lua-mpack
 luajit-devel
 msgpack-devel
 unibilium-devel
