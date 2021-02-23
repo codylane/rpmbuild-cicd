@@ -51,5 +51,5 @@ RUN yum clean all                                && \
     yum clean all
 
 COPY .bash_profile            /etc/profile.d/bash.sh
-COPY Dockerfile.centos8-build /
+COPY Dockerfile.centos7-build /
 COPY entrypoint.sh            /

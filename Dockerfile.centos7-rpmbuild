@@ -50,6 +50,6 @@ RUN yum clean all                                && \
     rpmdev-setuptree                             && \
     yum clean all
 
-COPY .bash_profile            /etc/profile.d/bash.sh
-COPY Dockerfile.centos8-build /
-COPY entrypoint.sh            /
+COPY .bash_profile               /etc/profile.d/bash.sh
+COPY Dockerfile.centos7-rpmbuild /
+COPY entrypoint.sh               /

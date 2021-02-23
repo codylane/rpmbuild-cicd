@@ -99,7 +99,6 @@ jenkins_run: jenkins_build
 
 rpm: build
 	docker-compose run $(RPMBUILD_CONTAINER_NAME) /entrypoint.sh
-	docker cp $(RPMBUILD_CONTAINER_NAME):/root/rpmbuild/RPMS rpmbuild/
 
 
 run: build
