@@ -64,6 +64,7 @@ steps for you automatically:
 cat > home.rc <<EOF
 export GITSERVER_FQDN='github.com'
 export GITSERVER_SSH_PORT='22'
+export DOCKER_INTERAL_REGISTRY='localhost'
 EOF
 ```
 

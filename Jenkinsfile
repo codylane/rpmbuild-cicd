@@ -17,19 +17,22 @@ pipeline
     text(name: 'SRC_RPMS',            defaultValue: '',  description: 'If provided, should be a multiline list of URLs to download SRC rpms')
 
     string(name: 'QA_RPATHS', defaultValue: '$(( 0x0002 ))', description: 'Disables invalid require paths')
+
+    string(name: 'DOCKER_INTERAL_REGISTRY', defaultValue: 'localhost', description: 'The FQDN of your local internal registry due to API restrictions with free docker hub')
   }
 
   environment
   {
-    BUILD_PACKAGES      = "${params.BUILD_PACKAGES}"
-    LANG                = "en_US.UTF-8"
-    PATCH_SPEC          = "${params.PATCH_SPEC}"
-    RPM_NAME            = "${params.RPM_NAME}"
-    RPM_VERSION         = "${params.RPM_VERSION}"
-    RPM_RELEASE         = "${params.RPM_RELEASE}"
-    RPMBUILD_EXTRA_ARGS = "${params.RPMBUILD_EXTRA_ARGS}"
-    QA_RPATHS           = "${params.QA_RPATHS}"
-    SRC_RPMS            = "${params.SRC_RPMS}"
+    BUILD_PACKAGES           = "${params.BUILD_PACKAGES}"
+    LANG                     = "en_US.UTF-8"
+    PATCH_SPEC               = "${params.PATCH_SPEC}"
+    RPM_NAME                 = "${params.RPM_NAME}"
+    RPM_VERSION              = "${params.RPM_VERSION}"
+    RPM_RELEASE              = "${params.RPM_RELEASE}"
+    RPMBUILD_EXTRA_ARGS      = "${params.RPMBUILD_EXTRA_ARGS}"
+    QA_RPATHS                = "${params.QA_RPATHS}"
+    SRC_RPMS                 = "${params.SRC_RPMS}"
+    DOCKER_INTERAL_REGISTRY  = "${params.DOCKER_INTERAL_REGISTRY}"
   }
 
   stages
@@ -40,8 +43,8 @@ pipeline
       {
         dir ('../workspace') {
           sh 'make build'
-          sh 'docker tag rpmbuild-cicd_centos8-build docker-registry.cmfl.net:5000/rpmbuild-cicd_centos8-build'
-          sh 'docker push docker-registry.cmfl.net:5000/rpmbuild-cicd_centos8-build'
+          sh 'docker tag rpmbuild-cicd_centos8-build ${DOCKER_INTERAL_REGISTRY}:5000/rpmbuild-cicd_centos8-build'
+          sh 'docker push ${DOCKER_INTERAL_REGISTRY}:5000/rpmbuild-cicd_centos8-build'
         }
       }
     }

@@ -25,20 +25,6 @@ unibilium-devel
 BUILD_PACKAGES_EOS
 )
 
-export PATCH_SPEC=neovim.spec.patch
-cat > rpmbuild/SPECS/neovim.spec.patch << 'SPEC_PATCH'
---- neovim.spec	2020-08-05 13:49:51.000000000 +0000
-+++ neovim-centos.spec	2021-02-18 18:31:51.409160000 +0000
-@@ -36,7 +36,6 @@
- # luajit implements version 5.1 of the lua language spec, so it needs the
- # compat versions of libs.
- BuildRequires:  luajit-devel
--BuildRequires:  compat-lua-lpeg
- BuildRequires:  compat-lua-mpack
- BuildRequires:  lua5.1-luv-devel
- Requires:       lua5.1-luv
-SPEC_PATCH
-
 export SRC_RPMS=$(cat <<SRC_RPMS_EOS
 https://kojipkgs.fedoraproject.org/packages/neovim/0.4.4/1.fc32/src/neovim-0.4.4-1.fc32.src.rpm
 SRC_RPMS_EOS

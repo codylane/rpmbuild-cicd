@@ -3,6 +3,7 @@ FROM jenkins/jenkins:lts-centos
 ARG DOCKER_COMPOSE_VERSION
 
 ENV DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION}
+ENV DOCKER_INTERAL_REGISTRY=localhost
 
 # Things that do not require build args should be placed first
 # which should help speed up the build process.

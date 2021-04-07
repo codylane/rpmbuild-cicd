@@ -172,6 +172,7 @@ services:
     networks:
       - rpmbuild
     environment:
+      DOCKER_INTERAL_REGISTRY: 'localhost'
       JENKINS_HOME: '/var/jenkins_home'
       JENKINS_URL: 'http://localhost:8080'
       JENKINS_API_USER: admin
