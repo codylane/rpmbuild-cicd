@@ -1,7 +1,9 @@
-pipeline {
+pipeline
+{
   agent any
 
-  parameters {
+  parameters
+  {
     choice(choices: ['en_US.UTF-8'], description: 'Locale specific environment', name: 'LANG')
 
     string(name: 'RPM_NAME',    defaultValue: '',   description: 'The RPM name')
@@ -17,7 +19,8 @@ pipeline {
     string(name: 'QA_RPATHS', defaultValue: '$(( 0x0002 ))', description: 'Disables invalid require paths')
   }
 
-  environment {
+  environment
+  {
     BUILD_PACKAGES      = "${params.BUILD_PACKAGES}"
     LANG                = "en_US.UTF-8"
     PATCH_SPEC          = "${params.PATCH_SPEC}"
@@ -29,10 +32,12 @@ pipeline {
     SRC_RPMS            = "${params.SRC_RPMS}"
   }
 
-  stages {
-
-    stage ('build-rpmbuild-container') {
-      steps {
+  stages
+  {
+    stage ('build-rpmbuild-container')
+    {
+      steps
+      {
         dir ('../workspace') {
           sh 'make build'
           sh 'docker tag rpmbuild-cicd_centos8-build docker-registry.cmfl.net:5000/rpmbuild-cicd_centos8-build'
@@ -41,19 +46,15 @@ pipeline {
       }
     }
 
-    stage ('build-rpm') {
-      steps {
-        dir ('../workspace') {
+    stage ('build-rpm')
+    {
+      steps
+      {
+        dir ('../workspace')
+        {
           sh 'make rpm'
         }
       }
     }
   }
-
-
-//  post {
-//    always {
-//      cleanWs()
-//    }
-//  }
 }
