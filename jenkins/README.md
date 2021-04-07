@@ -57,6 +57,21 @@ steps for you automatically:
 
 # How to build the Jenkins container
 
+- First, we need to create a configuration file so that we can tell
+  `docker-compose` which git server we want to use. 
+
+  ```
+cat > home.rc <<EOF
+GITSERVER_FQDN='github.com'
+GITSERVER_SSH_PORT='22'
+EOF
+  ```
+- Next, we source this environment file before running our build
+
+```
+. home.rc
+```
+
 ```
 make jenkins_build
 ```
