@@ -14,10 +14,10 @@ ENV RPM_RELEASE=""
 ENV RPMBUILD_EXTRA_ARGS=""
 ENV PATCH_SPEC=""
 
-RUN yum clean expire-cache                                                                                    && \
-    yum repolist                                                                                              && \
+RUN yum clean expire-cache                                         && \
+    yum repolist                                                   && \
     [ -z "${BUILD_PACKAGES}" ] || yum -y install ${BUILD_PACKAGES} && \
-    rpmdev-setuptree                                                                                          && \
+    rpmdev-setuptree                                               && \
     yum clean all
 
 COPY Dockerfile.centos7-rpmbuild /
