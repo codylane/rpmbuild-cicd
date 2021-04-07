@@ -47,6 +47,7 @@ destroy:
 
 jenkins_build:
 	[ -f ${HOME}/.ssh/id_rsa ] && cp ${HOME}/.ssh/id_rsa gitserver_ssh_key
+	chmod 0600 gitserver_ssh_key
 	docker-compose build jenkins
 
 
