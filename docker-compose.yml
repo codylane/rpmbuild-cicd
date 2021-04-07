@@ -152,8 +152,8 @@ services:
       dockerfile: 'Dockerfile.jenkins'
       args:
         DOCKER_COMPOSE_VERSION: '1.29.0'
-        GITSERVER_FQDN: $GITSERVER_FQDN
-        GITSERVER_SSH_PORT: $GITSERVER_SSH_PORT
+        GITSERVER_FQDN: "${GITSERVER_FQDN}"
+        GITSERVER_SSH_PORT: "${GITSERVER_SSH_PORT}"
         JENKINS_PLUGINS: >
           blueocean:1.24.5
           blueocean-bitbucket-pipeline:1.24.5
